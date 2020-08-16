@@ -1,0 +1,364 @@
+Destructuring Object and Array in ES6
+
+menggunakan literals {} untuk objek dan square brackets [] untuk array.
+contoh penggunaan:
+
+__ARRAY__
+* native
+const arr = ["Hasbi", "Tegal", ["Java", "python"]];
+
+const name = arr[0];
+const address = arr[1];
+const skill = arr[2];
+
+console.log(name);
+console.log(address);
+console.log(skill);
+
+*ES6
+const arr = ["Hasbi", "Tegal", ["Java", "python"]];
+
+const [name, address, skill] = arr;
+console.log(name);
+console.log(address);
+console.log(skill);
+
+__OBJECT__
+
+const obj = {
+name: "Hasbi",
+address: "Tegal",
+skill: ["Java", "python"]
+}
+
+*native 
+const name = obj.name;
+const address = obj.address;
+const skill = obj.skill;
+
+*ES6
+
+const {name, address, skill} = obj
+
+console.log(name);
+console.log(address);
+console.log(skill);
+________________________________________________________________________
+Spreading Operator and Rest Parameter
+
+Spreading operator dituliskan dengan tiga titik konsekutif (...).  
+Digunakan untuk membentangkan nilai array atau lebih tepatnya iterable object 
+menjadi beberapa elements. Mari kita lihat contoh kode berikut:
+
+const fav = ["salad", "soup", "nugget"];
+
+*native
+console.log(fav)
+
+return -> [ 'Seafood', 'Salad', 'Nugget']
+
+*Spread Operator (...)
+
+console.log(...fav)
+
+return -> Seafood Salad Nugget
+----
+sehingga penggunaan spread operator sama dengan 
+console.log(fav[0], fav[3], fav[2])
+
+
+Pada penerapan lain
+
+const num = [12, 32, 90]
+
+console.log(Math.max(...num));
+
+return -> 90
+
+dapat menggabungkan dua buah array pada arary baru
+contoh: 
+
+const fav = ["salad", "soup", "nugget"];
+const other = ["cake", "cakue", "tahu"];
+//menggabungkan 2a
+const arrayMerge  = [...fav, ...other];
+
+return -> ["salad", "soup", "nugget", "cake", "cakue", "tahu"];
+______________________________________________________________________
+
+REST PARAMETER
+menggunakan simbol yang sama dengan spread operator yaitu titik tiga (...)
+
+digunakan pada variadic function yang melakukan operasi matematika dengan memasukkan
+banyak nilai parameter
+
+contoh: 
+
+const sum = (...numbers) => {
+	let result = 0;
+	for(let number of numbers) {
+		result += number
+	}
+	return result
+}
+
+console.log(sum(1,2,3,4,5))
+
+return -> 15
+--------------
+Rest parameter dapat digunakan untuk mengelompokkan item pada destructuring array
+contoh:
+
+const kulkas = ["sharp", 30, 1, "daging", "sayur"]
+
+const [merek, berat, pintu, ...isi];
+
+console.log(merek)
+console.log(berat)
+console.log(pintu)
+console.log(isi)
+
+return -> 
+sharp
+30
+1
+['daging','sayur']
+____________________________________________________________________________________
+
+THIS KEYWORD
+Pada objek, this mengembalikan nilai objeknya sendiri. jika function dipanggil tanpa
+menggunakan keyword new maka this akan memiliki scope global.
+
+____________________________________________________________________________________
+
+CLASS
+penulisan class pada ES6
+
+class car {
+	constructor(manufacture, color) {
+		this.manufacture = manufacture;
+		this.color = color;
+		this.engineActive = false
+	}
+
+	method1() {
+		//code here
+	}
+
+	method2(params1) {
+		//code here
+	}
+}
+-----------------------
+class Car {
+    constructor(manufacture, color) {
+        this.manufacture = manufacture;
+        this.color = color;
+        this.enginesActive = false;
+    }
+    
+    startEngines() {
+        console.log("Mesin dinyalakan");
+        this.enginesActive = true;
+    }
+    
+    info() {
+        console.log(`Manufacture: ${this.manufacture}`);
+        console.log(`Color: ${this.color}`);
+        console.log(`Engines: ${this.manufacture ? "Active" : "Inactive"}`);
+    }
+}
+ 
+const johnCar = new Car("Honda", "Red");
+
+johnCar.startEngines();
+johnCar.info();
+ 
+ 
+/* output:
+Mesin dinyalakan
+Manufacture: Honda
+Color: Red
+Engines: Active
+*/
+_____________________________________________________________________________________
+
+INHERITANCE
+
+//ParentClass
+
+
+class Vehicle {
+    constructor(licensePlate, manufacture) {
+        this.licensePlate = licensePlate;
+        this.manufacture = manufacture;
+        this.engineActive = false;
+    }
+    
+    startEngines() {
+        console.log(`Mesin kendaraan ${this.licensePlate} dinyalakan!`);
+    }
+    
+    info() {
+        console.log(`Nomor Kendaraan: ${this.licensePlate}`);
+        console.log(`Manufacture: ${this.manufacture}`);
+        console.log(`Mesin: ${this.engineActive ? "Active": "Inactive"}`);
+    }
+    
+    parking() {
+        console.log(`Kendaraan ${this.licensePlate} parkir!`);
+    }
+}
+
+class Car extends Vehicle {
+   constructor(licensePlate, manufacture, wheels) {
+       super(licensePlate, manufacture);
+       this.wheels = wheels;
+   }
+ 
+   droveOff() {
+     console.log(`Kendaraan ${this.licensePlate} melaju!`);
+   }
+ 
+   openDoor() {
+     console.log(`Membuka pintu!`);
+   }
+
+//Overriding method info() dari ParentClass
+	info() {
+		super.info();
+		console.log(`Jumlah roda: ${this.wheels}`);
+	}
+}
+
+_____________________________________________________________________________________
+
+PROMISE
+
+Dalam synchronous program, jika kita menuliskan dua baris kode maka baris kode yang 
+kedua tidak bisa dieksekusi sebelum mengeksekusi kode pada baris pertama. 
+
+Dalam asynchronous program, jika kita menuliskan dua baris kode, kita dapat membuat 
+baris kode kedua dieksekusi tanpa harus menunggu kode pada baris pertama selesai 
+dieksekusi. 
+
+Dalam program yang dijalankan secara asynchronous task yang kecil akan lebih dahulu 
+selesai dibandingkan dengan task yang besar, meskipun task yang besar lebih dahulu 
+dijalankan.
+
+* SetTimeout
+
+Fungsi ini menerima dua buah parameter. Pertama adalah fungsi yang akan dijalankan 
+secara asynchronous, dan kedua adalah nilai number dalam milisecond sebagai nilai 
+tunggu sebelum fungsi dijalankan. Contoh penggunaannya adalah seperti ini:
+
+contoh:
+
+console.log("Selamat datang!");
+
+setTimeout(() => {
+	console.log("Terimakasih sudah mampir, silakan datang kembali!")
+}, 3000)
+console.log("Ada yang bisa dibantu?")
+
+
+* Callback Function pada asynchronous
+
+Bagaimana cara melakukannya? Yang pertama kita tambahkan parameter dengan nama 
+callback pada fungsi asynchronous.
+
+const getCake = callback => {
+	let cake = null;
+	console.log("Sedang membuat kue, silakan tunggu...")
+	
+	setTimeout(() => {
+		cake = "Kue Selesai"
+	}, 3000);
+	return cake;
+}
+
+-------------------penerapan callback-------------------
+
+const getCake = callback => {
+	let cake = null;
+	console.log("Sedang membuat kue, silakan tunggu...")
+	
+	setTimeout(() => {
+		cake = "Kue Selesai";
+		//panggil parameter callback dan masukan data yang akan dibawa
+		callback(cake);
+	}, 3000);
+	
+}
+
+//ganti
+const cake = getCake();
+console.log(cake);
+
+//dengan
+getCake(cake => {
+	console.log(cake);
+});
+
+
+/* output:
+Sedang membuat kue, silakan tunggu ....
+---- setelah 3 detik ----
+Kue Selesai!
+*/
+
+
+* Callback Hell
+
+Callback sangat dibutuhkan untuk mendapatkan nilai dari asynchronous function.
+Lantas bagaimana jika terdapat proses satu sama lain yang saling bergantungan?
+Contoh, untuk membuat kue tahapan yang perlu kita lakukan adalah:
+
+1. Mempersiapkan bahan
+2. Membuat adonan
+3. Menyiapkan adonan ke cetakan
+4. Memanggang adonan 
+
+contoh callback hell: 
+*synchronous
+function makeACake(...rawIngredients) {
+	const ingredients = gatheringIngredients(rawIngredients),
+	dough = makeTheDough(ingredients),
+	pouredDough = pourDough(dough),
+	cake = bakeACake(pourDough),
+	console.log(cake);
+}
+
+*asynchronous
+function makeACake(...rawIngredients) {
+	gatheringIngredients(rawIngredients, function(ingridients) {
+		makeTheDough(ingridients, function(dough) {
+			pourDough(dough, function(pouredDough) {
+				bakeACake(pouredDough, function(cake) {
+					console.log(cake);
+				});
+			});
+		});
+	});
+}
+
+Untuk menghindari Callback hell yaitu dengan menggunakan promise.
+Contoh: 
+
+function makeACake(...rawIngredients) {
+	gatheringIngredients(rawIngredients)
+	.then(makeTheDough)
+	.then(pourDough)
+	.then(bakeACake)
+	.then(console.log);
+}
+__________________________________________________________________________________________
+Promise
+
+Memiliki 3 kondisi perilaku, seperti: 
+1. pending (janji sedang dalam proses)
+2. fulfilled (janji terpenuhi)
+3. Rejected (janji gagal terpenuhi)
+
+__Constructuring a promise object
+
