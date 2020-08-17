@@ -362,3 +362,125 @@ Memiliki 3 kondisi perilaku, seperti:
 
 __Constructuring a promise object
 
+const coffee = new Promise();
+
+diperlukan resolver atau bisa disebut executor function sebagai parameter callback yang akan
+diekseskusi secara otomatis
+
+contoh: 
+
+const exeFunc = (res, rej) => {
+  const cofee = true;
+  if(cofee) {
+    res("success")
+  }
+    rej("Failed")
+}
+
+const makeCofee = new Promise(exeFunc);
+
+console.log(makeCofee)
+
+__Return -> /* output:
+Promise { 'Success' }
+*/
+
+
+Executor function dapat memiliki dua parameter, yang berfungsi sebagai resolve() dan reject() 
+function. Berikut penjelasan detailnya:
+
+1. resolve() merupakan parameter pertama pada executor function. Parameter ini merupakan fungsi 
+yang dapat menerima satu parameter, biasanya kita gunakan untuk mengirimkan data ketika promise 
+berhasil dilakukan. Ketika fungsi ini terpanggil, kondisi Promise akan berubah dari pending 
+menjadi fulfilled.
+
+2. reject() merupakan parameter kedua pada executor function. Parameter ini merupakan fungsi yang 
+dapat menerima satu parameter yang digunakan untuk memberikan alasan mengapa Promise tidak dapat 
+terpenuhi. Ketika fungsi ini terpanggil, kondisi Promise akan berubah dari pending menjadi rejected.
+__________________________________________________________________________________________
+
+onFulfilled and onRejected Functions
+
+Untuk menangani nilai yang dikirimkan oleh resolve() ketika Promise onFulfilled, kita gunakan method 
+.then() pada objek promise yang kita buat. Lalu di dalam method .then() kita berikan parameter berupa 
+function yang berguna sebagai handle callback. Contohnya seperti ini:
+
+const exeFunc = (res, rej) => {
+  const cofee = true;
+  if(cofee) {
+    res("success")
+  }
+    rej("Failed")
+}
+
+//deklarasikan function handler dari resolve value yang mencetak nilai dari parameternya
+
+const handlerSuccess =  (resolveValue) => {
+  console.log(resolveValue);
+}
+
+//buat objek promis dan ambil nilai dari function exefunc
+
+const makeCofee = new Promise(exeFunc);
+
+//ketika exefunc menghasilkan nilai resolve maka handler membawa nilai resolve()
+
+makeCofee.then(handlerSuccess);
+
+
+PEEMBAHASAN KODE
+Mari kita bedah kode yang ada di atas:
+
+1. makeCoffee merupakan objek promise yang akan menghasilkan resolve() dengan membawa nilai ‘Kopi berhasil dibuat’.
+2. Lalu kita mendeklarasikan fungsi handlerSuccess() yang mencetak nilai dari parameternya.
+3. Kemudian kita memanggil method .then() dari makeCoffee dan memberikan handlerSuccess sebagai parameternya.
+4. Ketika makeCoffee terpenuhi (fulfilled), maka handlerSuccess() akan terpanggil dengan parameter nilai yang 
+dibawa oleh resolve(). Sehingga output akan menghasilkan “Kopi berhasil dibuat”.
+
+**Note, bagaimana jika respon yang diberikan reject()?
+kita dapat menyimpan dua handle callback yaitu onFulfilled atau onRejected dalam parameter method .then().
+contoh: 
+
+makeCoffee.then(handlerSuccess, handlerRejected); 
+
+**Kode lengkap
+
+const exeFunc = (res, rej) => {
+  const cofee = false;
+  if(cofee) {
+    res("success")
+  }
+    rej("Failed")
+}
+
+const handlerSuccess =  (resolveValue) => {
+  console.log(resolveValue);
+}
+
+const handlerFailed = (rejectValue) => {
+  console.log(rejectValue);
+}
+
+const makeCofee = new Promise(exeFunc);
+
+makeCofee.then(handlerSuccess, handlerFailed);
+
+______________________________________________________________________
+OnReject with car
+
+parameter dalam .then dapat dipisahkan seperti
+
+const makeCofee = new Promise(exeFunc);
+makeCofee
+	.then(handlerSuccess)
+	.then(null, handlerFailed)
+
+tetapi dalam handler failed kita perlu menuliskan null, hal ini mungkin sedikit merepotkan
+
+untuk menerapkan separate of concern kita dapat menggunakan .catch() untuk handler reject
+
+seperti: 
+
+makeCofee
+	.then(handlerSuccess)
+	.catch(handlerFailed)
