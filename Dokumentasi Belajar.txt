@@ -1,5 +1,5 @@
-Destructuring Object and Array in ES6
-
+***Destructuring Object and Array in ES6
+__________________________________________________________________________________________
 menggunakan literals {} untuk objek dan square brackets [] untuk array.
 contoh penggunaan:
 
@@ -44,8 +44,9 @@ console.log(name);
 console.log(address);
 console.log(skill);
 ________________________________________________________________________
-Spreading Operator and Rest Parameter
 
+***Spreading Operator and Rest Parameter
+__________________________________________________________________________________________
 Spreading operator dituliskan dengan tiga titik konsekutif (...).  
 Digunakan untuk membentangkan nilai array atau lebih tepatnya iterable object 
 menjadi beberapa elements. Mari kita lihat contoh kode berikut:
@@ -86,7 +87,8 @@ const arrayMerge  = [...fav, ...other];
 return -> ["salad", "soup", "nugget", "cake", "cakue", "tahu"];
 ______________________________________________________________________
 
-REST PARAMETER
+***REST PARAMETER
+__________________________________________________________________________________________
 menggunakan simbol yang sama dengan spread operator yaitu titik tiga (...)
 
 digunakan pada variadic function yang melakukan operasi matematika dengan memasukkan
@@ -125,13 +127,14 @@ sharp
 ['daging','sayur']
 ____________________________________________________________________________________
 
-THIS KEYWORD
+***THIS KEYWORD
+__________________________________________________________________________________________
 Pada objek, this mengembalikan nilai objeknya sendiri. jika function dipanggil tanpa
 menggunakan keyword new maka this akan memiliki scope global.
 
 ____________________________________________________________________________________
-
-CLASS
+***CLASS
+__________________________________________________________________________________________
 penulisan class pada ES6
 
 class car {
@@ -183,8 +186,8 @@ Engines: Active
 */
 _____________________________________________________________________________________
 
-INHERITANCE
-
+***INHERITANCE
+__________________________________________________________________________________________
 //ParentClass
 
 
@@ -233,8 +236,8 @@ class Car extends Vehicle {
 
 _____________________________________________________________________________________
 
-PROMISE
-
+***PROMISE
+__________________________________________________________________________________________
 Dalam synchronous program, jika kita menuliskan dua baris kode maka baris kode yang 
 kedua tidak bisa dieksekusi sebelum mengeksekusi kode pada baris pertama. 
 
@@ -353,7 +356,8 @@ function makeACake(...rawIngredients) {
 	.then(console.log);
 }
 __________________________________________________________________________________________
-Promise
+***PROMISE
+__________________________________________________________________________________________
 
 Memiliki 3 kondisi perilaku, seperti: 
 1. pending (janji sedang dalam proses)
@@ -399,7 +403,7 @@ dapat menerima satu parameter yang digunakan untuk memberikan alasan mengapa Pro
 terpenuhi. Ketika fungsi ini terpanggil, kondisi Promise akan berubah dari pending menjadi rejected.
 __________________________________________________________________________________________
 
-onFulfilled and onRejected Functions
+**onFulfilled and onRejected Functions
 
 Untuk menangani nilai yang dikirimkan oleh resolve() ketika Promise onFulfilled, kita gunakan method 
 .then() pada objek promise yang kita buat. Lalu di dalam method .then() kita berikan parameter berupa 
@@ -431,11 +435,11 @@ makeCofee.then(handlerSuccess);
 PEEMBAHASAN KODE
 Mari kita bedah kode yang ada di atas:
 
-1. makeCoffee merupakan objek promise yang akan menghasilkan resolve() dengan membawa nilai ‘Kopi berhasil dibuat’.
+1. makeCoffee merupakan objek promise yang akan menghasilkan resolve() dengan membawa nilai ï¿½Kopi berhasil dibuatï¿½.
 2. Lalu kita mendeklarasikan fungsi handlerSuccess() yang mencetak nilai dari parameternya.
 3. Kemudian kita memanggil method .then() dari makeCoffee dan memberikan handlerSuccess sebagai parameternya.
 4. Ketika makeCoffee terpenuhi (fulfilled), maka handlerSuccess() akan terpanggil dengan parameter nilai yang 
-dibawa oleh resolve(). Sehingga output akan menghasilkan “Kopi berhasil dibuat”.
+dibawa oleh resolve(). Sehingga output akan menghasilkan ï¿½Kopi berhasil dibuatï¿½.
 
 **Note, bagaimana jika respon yang diberikan reject()?
 kita dapat menyimpan dua handle callback yaitu onFulfilled atau onRejected dalam parameter method .then().
@@ -443,7 +447,7 @@ contoh:
 
 makeCoffee.then(handlerSuccess, handlerRejected); 
 
-**Kode lengkap
+*Kode lengkap
 
 const exeFunc = (res, rej) => {
   const cofee = false;
@@ -466,7 +470,7 @@ const makeCofee = new Promise(exeFunc);
 makeCofee.then(handlerSuccess, handlerFailed);
 
 ______________________________________________________________________
-OnReject with car
+OnReject with catch
 
 parameter dalam .then dapat dipisahkan seperti
 
@@ -478,9 +482,79 @@ makeCofee
 tetapi dalam handler failed kita perlu menuliskan null, hal ini mungkin sedikit merepotkan
 
 untuk menerapkan separate of concern kita dapat menggunakan .catch() untuk handler reject
-
+untuk memisahkan kedua logika tersebut yaitu resolve dan reject.
 seperti: 
 
 makeCofee
 	.then(handlerSuccess)
 	.catch(handlerFailed)
+
+______________________________________________________________________________________________
+***CHAINING PROMISE
+
+untuk menghindari callbak hell atau dalam kasus keadaan asynchronous operation saling bergantungan
+kita dapat menggunakan promise.
+
+dalam studi kasus Contohnya, Ketika kita memesan kopi robusta, maka tahapan yang dilalui oleh 
+barista adalah memastikan biji kopi tersedia, membuat kopi, lalu menghidangkannya kepada pelanggan.
+Tahapan tersebut harus barista lakukan secara berurutan.
+
+contoh kode: 
+
+//STATE
+const state = {
+  isCofeeMakerReady: true,
+  seedStocks: {
+    arabica: 250,
+    robusta: 60,
+    liberica: 80
+  }
+}
+
+//*Kode function seeds:
+
+const getSeeds = (type, miligrams) => {
+  return new Promise((resolve, reject) ={
+      if(state.seedStocks[type] >= miligrams){
+        state.seedStocks[type] -= miligrams;
+        resolve("Biji kopi berhasi didapatkan");
+      } else {
+        reject("Stok Habis");
+      }
+  });
+}
+
+const makeCofee = seeds => {
+  return new Promise((resolve, reject) => {
+    if(state.isCofeeMakerReady) {
+      resolve("kopi berhasil dibuat");
+    } else {
+      reject("maaf mesin tidak dapat digunakan");
+    }
+  });
+}
+
+const servingToTable = cofee => {
+  return new Promise(resolve => {
+    resolve("Pesanan kopi sudah selesai");
+  });
+}
+
+const reserveACofee = (type, miligrams) => {
+  getSeeds(type, miligrams)
+  .then(makeCofee)
+  .then(servingToTable)
+  .then(resolvedValue => {
+    console.log(resolvedValue);
+  })
+  
+  .catch(rejectedReason => {
+    console.log(rejectedReason);
+  })
+}
+
+reserveACofee("robusta", 80);
+
+/* output:
+Pesanan kopi sudah selesai!
+*/
