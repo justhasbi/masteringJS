@@ -374,16 +374,16 @@ diekseskusi secara otomatis
 contoh: 
 
 const exeFunc = (res, rej) => {
-  const cofee = true;
-  if(cofee) {
+  const coffee = true;
+  if(coffee) {
     res("success")
   }
     rej("Failed")
 }
 
-const makeCofee = new Promise(exeFunc);
+const makeCoffee = new Promise(exeFunc);
 
-console.log(makeCofee)
+console.log(makeCoffee)
 
 __Return -> /* output:
 Promise { 'Success' }
@@ -410,8 +410,8 @@ Untuk menangani nilai yang dikirimkan oleh resolve() ketika Promise onFulfilled,
 function yang berguna sebagai handle callback. Contohnya seperti ini:
 
 const exeFunc = (res, rej) => {
-  const cofee = true;
-  if(cofee) {
+  const coffee = true;
+  if(coffee) {
     res("success")
   }
     rej("Failed")
@@ -425,11 +425,11 @@ const handlerSuccess =  (resolveValue) => {
 
 //buat objek promis dan ambil nilai dari function exefunc
 
-const makeCofee = new Promise(exeFunc);
+const makeCoffee = new Promise(exeFunc);
 
 //ketika exefunc menghasilkan nilai resolve maka handler membawa nilai resolve()
 
-makeCofee.then(handlerSuccess);
+makeCoffee.then(handlerSuccess);
 
 
 PEEMBAHASAN KODE
@@ -450,8 +450,8 @@ makeCoffee.then(handlerSuccess, handlerRejected);
 *Kode lengkap
 
 const exeFunc = (res, rej) => {
-  const cofee = false;
-  if(cofee) {
+  const coffee = false;
+  if(coffee) {
     res("success")
   }
     rej("Failed")
@@ -465,17 +465,17 @@ const handlerFailed = (rejectValue) => {
   console.log(rejectValue);
 }
 
-const makeCofee = new Promise(exeFunc);
+const makeCoffee = new Promise(exeFunc);
 
-makeCofee.then(handlerSuccess, handlerFailed);
+makeCoffee.then(handlerSuccess, handlerFailed);
 
 ______________________________________________________________________
 OnReject with catch
 
 parameter dalam .then dapat dipisahkan seperti
 
-const makeCofee = new Promise(exeFunc);
-makeCofee
+const makeCoffee = new Promise(exeFunc);
+makeCoffee
 	.then(handlerSuccess)
 	.then(null, handlerFailed)
 
@@ -485,7 +485,7 @@ untuk menerapkan separate of concern kita dapat menggunakan .catch() untuk handl
 untuk memisahkan kedua logika tersebut yaitu resolve dan reject.
 seperti: 
 
-makeCofee
+makeCoffee
 	.then(handlerSuccess)
 	.catch(handlerFailed)
 
@@ -503,7 +503,7 @@ contoh kode:
 
 //STATE
 const state = {
-  isCofeeMakerReady: true,
+  iscoffeeMakerReady: true,
   seedStocks: {
     arabica: 250,
     robusta: 60,
@@ -524,9 +524,9 @@ const getSeeds = (type, miligrams) => {
   });
 }
 
-const makeCofee = seeds => {
+const makeCoffee = seeds => {
   return new Promise((resolve, reject) => {
-    if(state.isCofeeMakerReady) {
+    if(state.isCoffeeMakerReady) {
       resolve("kopi berhasil dibuat");
     } else {
       reject("maaf mesin tidak dapat digunakan");
@@ -534,15 +534,15 @@ const makeCofee = seeds => {
   });
 }
 
-const servingToTable = cofee => {
+const servingToTable = coffee => {
   return new Promise(resolve => {
     resolve("Pesanan kopi sudah selesai");
   });
 }
 
-const reserveACofee = (type, miligrams) => {
+const reserveACoffee = (type, miligrams) => {
   getSeeds(type, miligrams)
-  .then(makeCofee)
+  .then(makeCoffee)
   .then(servingToTable)
   .then(resolvedValue => {
     console.log(resolvedValue);
@@ -553,8 +553,213 @@ const reserveACofee = (type, miligrams) => {
   })
 }
 
-reserveACofee("robusta", 80);
+reserveACoffee("robusta", 80);
 
 /* output:
 Pesanan kopi sudah selesai!
 */
+
+----------------
+penjelasan kode diatas
+
+kita memsan kopi melalui method reserveAcoffee(), dengan mengambil dua parameter yaitu type (tipe kopi) dan miligrams (banyak kopi) kemudian dikirimkan pada method getSeeds dimana method ini mengembalikan nilai promise resolve dan reject.
+selanjutnya nilai resolve akan dikirimkan pada .then(makeCoffee). Method makeCoffee
+mengembalikan nilai resolve apakah mesin siap digunakan?. setelah kopi sudah dibuat maka dikirimkan ke .then(servingToTable) dan terakhir kita gunakan .then(resolveValue) untuk mencetak nilai yang dikembalikan oleh method servingToTable.
+Kemudian yang paling akhir adalah method catch() untuk menangani promise rejection.
+______________________________________________________________________
+
+**PROMISE ALL
+Promise.all()
+
+Dapat menerima banyak promise (dalam bentuk array) pada parameternya. mengembalikan nilai dari seluruh promise yang kita tetapkan dalam bentuk array.
+
+//Contoh kode
+
+// membuat method Promise
+const arabicaOrder = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve("Kopi Arabica Selesai!");
+    }, 4000)
+  });
+}
+
+const luwakOrder = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve("Kopi Luwak Selesai!")
+    }, 2000);
+  });
+}
+
+const robustOrder = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve("Kopi Robusta Selesai!")
+    }, 3000)
+  });
+}
+
+// memasukkan Promise dalam array
+
+const promisesObj = [arabicaOrder(), luwakOrder(), robustOrder()];
+
+// menggunakan Promise.all() untuk mendapatkan nilai respon resolve dari seluruh promise
+
+Promise.all(promisesObj).then(resolveValue => {
+  console.log(resolveValue);
+})
+
+/* output:
+[ 
+  'Kopi Arabica Selesai!',
+  'Kopi Luwak Selesai!',
+  'Kopi Robusta Selesai!'
+]
+ */
+
+ nilai yang dikembalikan urutannya sesuai dengan array yang kita deklarasikan
+
+ _____________________________________________________________________________
+
+ **ASYNC-AWAIT Syntax
+
+ mendapatkan nilai dari promise kita dapat menggunakan
+--------------
+ const makeCoffee = () => {
+   getCoffee().then(coffee => {
+     console.log(coffee);
+   });
+ }
+
+ makeCoffee();
+---------------
+ Pada rilis ES8 (Ecmascript 2017) kita dapat menuliskan asynchronous process seperti synchronous proses menggunakan keyword async dan await.
+
+*Using async dan await
+
+komparasi:
+* Promise
+
+const getCoffee = () => {
+  return new Promise((resolve, reject) => {
+    const seeds = 100;
+    setTimeout(() => {
+      if(seeds >= 10){
+        resolve("Kopi didapatkan")
+      } else {
+        reject("Biji kopi habis")
+      }
+    }, 1000);
+  });
+}
+
+function makeCoffee() {
+ getCoffee()
+ .then(coffee => {
+   console.log(coffee)
+ })
+}
+ 
+makeCoffee();
+ 
+/* output
+Coffee didapatkan!
+*/
+
+*async dan await
+
+async function makeCoffee() {
+ const coffee = await getCoffee();
+ console.log(coffee);
+}
+ 
+makeCoffee();
+ 
+/* output
+Coffee didapatkan!
+*/
+
+
+_______________________________________________________________________________
+
+* Bagaimana cara menghandle onRejected dengan async/await
+
+note: await hanya akan mengembalikan nilai jika promise berhasil (onFulfilled).
+Jadi bagaiman jika promise gagal dilakukan (onRejected)?
+
+Dalam konsep synchronous code, kita dapat menangani error dengan try and catch.
+
+tempatkan resolve value dalam try, seperti ini:
+
+async function makeCoffee() {
+  try{
+    const coffee = await getCoffee();
+    console.log(coffee);
+  }
+}
+
+kemudian kita dapat menggunakan block catch untuk menangani jika promise gagal dilakukan (onRejected).
+
+async function makeCoffee() {
+  try{
+    const coffee = await getCoffee();
+    console.log(coffee);
+  } catch(rejectedReason) {
+    console.log(rejectedReason);
+  }
+}
+
+makeCoffee();
+
+
+/* output
+Biji kopi habis!
+*/
+
+________________________________________________________________________________
+
+** Chaining Promise using async/await
+
+Bagaimana cara menangani promise berantain menggunakan async/await.
+
+*KOMPARASI
+__Promise
+
+function reserveACoffee(type, miligrams){
+  getSeeds(type, miligrams)
+  .then(makeCoffee)
+  .then(servingToTable)
+  .then(resolvedValue => {
+    console.log(resolvedValue);
+  })
+  .catch(rejectedReason => {
+    console.log(rejectedReason);
+  })
+}
+
+reserveACoffee("liberica", 80);
+ 
+/* output:
+Pesanan kopi sudah selesai!
+*/
+
+__async/await
+
+async function reserveACoffee(type, miligrams) {
+  try {
+    const seeds = await getSeeds(type, miligrams);
+    const coffee = await makeCoffee(seeds);
+    const result = await servingToTable(coffee);
+    console.log(result);
+  } catch(rejectedReason) {
+    console.log(rejectedReason);
+  }
+}
+
+reserveACoffee("liberica", 80);
+
+/* output:
+Pesanan kopi sudah selesai!
+*/
+
