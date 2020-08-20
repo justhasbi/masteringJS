@@ -4,8 +4,24 @@ const main = function () {
     const clubListElement = document.querySelector("#clubList");
 
     const onButtonSearchClicked = () => {
-        const dataSource = new DataSource(renderResult, fallbackResult);
-        dataSource.searchClub(searchElement.value);
+    // const onButtonSearchClicked = async () => {
+        // native js script
+        // const dataSource = new DataSource(renderResult, fallbackResult);
+        // dataSource.searchClub(searchElement.value);
+
+        // promise
+        DataSource.searchClub(searchElement.value)
+        .then(renderResult)
+        .catch(fallbackResult);
+
+        // async/await
+        
+        // try{
+        //     const result = await DataSource.searchClub(searchElement.vallue);
+        //     renderResult(result);
+        // } catch(message) {
+        //     fallbackResult(message);
+        // }
     };
 
     const renderResult = (results) =>{

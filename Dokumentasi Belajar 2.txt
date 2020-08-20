@@ -1,0 +1,104 @@
+** Node.js Export and Import Modules
+
+module bekerja dengan cara exporting atau importing nilai baik variable, method, array, objek, array ataupun class.
+
+Contoh:
+
+const coffeeStock = {
+    arabica: 100,
+    robusta: 120,
+    liberica: 90,
+    luwak: 150
+};
+
+module.exports = coffeeStock;
+
+jika kita console.log(module)
+
+maka kita akan mendapatkan objek coffeeStock menjadi nilai dari properti expert seperti dibawah ini:
+
+Module {
+  id: '.',
+  exports: { arabica: 100, robusta: 150, liberica: 200 },
+  parent: null,
+  filename: '/home/runner/163-02-export-import/state.js',
+  loaded: false,
+  children: [],
+  paths:
+   [ '/home/runner/163-02-export-import/node_modules',
+     '/home/runner/node_modules',
+     '/home/node_modules',
+     '/node_modules' ] 
+}
+
+*Untuk melakukan import caranya dengan menggunakan method require()
+-----
+const coffeeStock = require('./state.js');
+
+console.log(coffeeStock);
+---->
+kemudian kita dapat menggunakannya sesuai keinginan kita
+
+<----
+const makeCoffe = (type, miligrams) => {
+    if(coffeeStock[type] >= miligrams) {
+        console.log('Kopi Berhasil Dibuat');
+    } else {
+        console.log('Biji Kopi Habis')
+    }
+}
+
+makeCoffe('luwak', 80);
+
+***Note:
+“Tips dalam memberikan lokasi pada method require(): Jika kita gunakan lokasi yang relatif (dapat berubah/dipindahkan), pastikan awali dengan menuliskan ./. Contohnya, berkas index.js dan state.js berada pada folder yang sama, maka kita cukup menuliskannya dengan ./state.js.”
+
+______________________________________________________________________________
+
+**Multiple export value in Node.js
+
+Kita dapat memanfaatkan objek literals {} untuk mengeksport lebih dari satu nilai.
+contoh:
+
+const coffeeStock = {
+    arabica: 100,
+    robusta: 120,
+    liberica: 90,
+    luwak: 150
+};
+//kita akan menambahkan isCoffeeMakerReady
+const isCoffeeMakerReady = true
+
+module.exports = {coffeeStock, isCoffeeMakerReady};
+
+ketika import:
+
+const {coffeeStock, isCoffeeMakerReady} = require('./state.js);
+console.log(coffeeStock);
+console.log(isCoffeeMakerReady);
+
+/* output
+{ arabica: 100, robusta: 150, liberica: 200 }
+true
+*/
+
+______________________________________________________________________________
+**Exporting and importing single value (Default Export)
+
+pada ES6 jika kita hanya mengeksport satu nilai, kita gunakan export Default. contoh:
+
+const coffeeStock = {
+    arabica: 100,
+    robusta: 120,
+    liberica: 90,
+    luwak: 150
+};
+
+export default coffeeStock;
+
+untuk mengimportny kita menggunakan import ... from ...
+
+contoh:
+
+// variable stock boleh bebas
+import stock from "./state.js"
