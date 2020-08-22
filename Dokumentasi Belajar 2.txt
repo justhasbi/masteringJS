@@ -96,9 +96,77 @@ const coffeeStock = {
 
 export default coffeeStock;
 
-untuk mengimportny kita menggunakan import ... from ...
+untuk mengimportnya kita menggunakan import ... from ...
 
 contoh:
 
 // variable stock boleh bebas
 import stock from "./state.js"
+
+** Exporting and importing Multiple value (named export/import)
+
+contoh:
+const coffeeStock = {
+    arabica: 100,
+    robusta: 120,
+    liberica: 90,
+    luwak: 150
+};
+const isCoffeeMakerReady = true;
+//menggunakan literals
+export { coffeeStock, isCoffeeMakerReady};
+
+// import
+import{ coffeeStock, isCoffeeMakerReady} from "./state.js";
+
+______________________________________________________________________________
+______________________________________________________________________________
+
+*** WEB COMPONENT
+what is web component?
+
+The web component is one of features who set by the World Wide Web Consortium Standard. This features make it easier for developer to make their website ui component more modular.
+
+why should we use standard web components?
+
+* Standard: The web components is a standard set by W3C in making reusable web      components.
+
+* Compatibility: because web components is standard, they can use be use in framework like angular, react, or vue.
+
+* Simple: using web component doesn't special configuration like existing framework. Because web components are built using nothing but pure js/html/css.
+
+There are two API's in implementing web component, that is:
+
+* Custom Elements: used to make a new Elements (Custom Elements). we also can determine their behaviorrs as needed.
+
+* Shadow DOM: Used to create encapsulated HTML elements from outside interference.
+ussualy used on Custom Elements, so that these elements affected by styling that is set from outside elements.
+
+-------Practice Write a Custom Elements-------
+
+Dalam membuat custom element, kita akan menerapkannya pada javascript class dengan mewarisi sifat dari HTMLElement. HTMLElement sendiri merupakan API yang merepresentasikan elemen HTML.
+
+contoh penulisannya:
+-- 
+class imgFigure extends HTMLElement {
+
+}
+
+untuk menggunakan custom elemen kita perlu menetapkan nama tag yang akan kita gunakan pada HTML, caranya dengan menggunakan variable customElements.
+
+customElements.define("image-figure", imgFigure);
+
+penjelasan -> customElements merupakan variable global yang digunakan untuk mendefinisikan custom elements. Di dalam customElements terdapat method define() yang menerima dua parameter, yaitu parameter pertama untuk meletakan TAG NAME baru kemudian diikuti javascript class yang menerapkan sifat HTMLElement.
+
+**NOTE: dalam penulisan nama custom elements -> nama tag harus terdiri dari dua kata dan dipisahkan dengan dash (-) hal ini diperlukan untuk memberitahu browser perbedaan antara elemen asli dengan custom.
+
+setelah didefinisikan kita dapat menggunakan custom elements tersebut.
+
+<imgFigure></imgFigure>
+//lampirkan juga script pada berkas yang digunakan untuk menuliskan customElements.
+
+<script src="image-figure.js"></script>
+______________________________________________________________________________
+
+***Custom Elements Life Cycle
+
