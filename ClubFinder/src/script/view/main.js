@@ -7,6 +7,7 @@ const main = function () {
 
     const onButtonSearchClicked = () => {
     // const onButtonSearchClicked = async () => {
+        
         // native js script
         // const dataSource = new DataSource(renderResult, fallbackResult);
         // dataSource.searchClub(searchElement.value);

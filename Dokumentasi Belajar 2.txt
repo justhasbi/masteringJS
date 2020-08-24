@@ -120,6 +120,7 @@ export { coffeeStock, isCoffeeMakerReady};
 import{ coffeeStock, isCoffeeMakerReady} from "./state.js";
 
 ______________________________________________________________________________
+My english is sucks, sorry :(.
 ______________________________________________________________________________
 
 *** WEB COMPONENT
@@ -129,7 +130,7 @@ The web component is one of features who set by the World Wide Web Consortium St
 
 why should we use standard web components?
 
-* Standard: The web components is a standard set by W3C in making reusable web      components.
+* Standard: The web components is a standard set by W3C in making reusable web components.
 
 * Compatibility: because web components is standard, they can use be use in framework like angular, react, or vue.
 
@@ -162,7 +163,7 @@ penjelasan -> customElements merupakan variable global yang digunakan untuk mend
 
 setelah didefinisikan kita dapat menggunakan custom elements tersebut.
 
-<imgFigure></imgFigure>
+<image-figure></image-figure>
 //lampirkan juga script pada berkas yang digunakan untuk menuliskan customElements.
 
 <script src="image-figure.js"></script>
@@ -170,3 +171,38 @@ ______________________________________________________________________________
 
 ***Custom Elements Life Cycle
 
+setiap class yang mewarisi HTMLElement maka akan memiliki siklus hidup yang sama dengan elemen html lainnya, kita dapat menerapkan logika pada setiap life Cycle dengan memanfaatkan lifecycle callbacks, seperti:
+
+1. connectedCallback() -> dipanggil ketika elemen ditambahkan ke dokumen HTML (DOM).
+
+2. disconnectedCallback() -> dipanggil ketika elemen diremove dari DOM
+
+3. attributeChangedCallback() : Akan terpanggil setiap kali nilai atribut yang di-observe melalui fungsi static get observedAttributes diubah. Callback ini bisa kita manfaatkan untuk memuat ulang data yang ditampilkan oleh elemen.
+
+4. adoptedCallback() : Akan terpanggil setiap kali elemen dipindahkan pada dokumen baru. Kita relatif jarang menggunakan callback ini, namun jika kita memanfaatkan tag <iframe> maka callback ini akan terpanggil.
+
+**untuk melihat contoh buka folder course/lifecyle-custom-elem
+
+______________________________________________________________________________
+
+*** Custom Elements Attribute and method
+
+Selain mewarisi lifecycle, clas yang mewarisi sifat HTMLElement dapata memiliki properti dan method yang sama dengan DOM seperti innerHTML, innerText, appendChild, remove().
+
+**untuk melihat contoh buka folder course/lifecyle-custom-elem
+
+______________________________________________________________________________
+
+*** Observe Attribute Value
+
+Ketika kita mengubah nilai atribut pada custom elemen maka hasilnya tidak berubah secara realtime karena custom elemen perlu mengimplementasikan dua function pada kelasnya (ImageFigure). Function tersebut adalah attributeChangedCallback dan function static get observedAttributes.
+
+pada function attributeChangedCallback terdapat 3 argumen.
+
+1. name: nama atribut yang berubah.
+2. oldValue: nilai pada atribut sebelum diubah, dan
+3. newValue: nilai pada atribut setelah diubah.
+
+**penempatan argumen sangatlah penting jadi perhatikan!
+
+contoh implementasinya dapat dilihat pada folder course/lifecyle-custom-elem
