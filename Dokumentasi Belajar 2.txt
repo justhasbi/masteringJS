@@ -195,9 +195,11 @@ ______________________________________________________________________________
 
 *** Observe Attribute Value
 
-Ketika kita mengubah nilai atribut pada custom elemen maka hasilnya tidak berubah secara realtime karena custom elemen perlu mengimplementasikan dua function pada kelasnya (ImageFigure). Function tersebut adalah attributeChangedCallback dan function static get observedAttributes.
+Ketika kita mengubah nilai atribut pada custom elemen maka hasilnya tidak berubah secara realtime karena custom elemen perlu mengimplementasikan dua function pada kelasnya (ImageFigure) agar dapat mengobservasi nilai atribut yang berubah. Function tersebut adalah attributeChangedCallback dan function static get observedAttributes.
 
-pada function attributeChangedCallback terdapat 3 argumen.
+fungsi attributeChangedCallback akan terpanggil ketika nilai array yang diamati pada function **static get observedAttributes** diubah nilainya.
+
+pada function attributeChangedCallback terdapat 3 argumen untuk menerapkan logika perubahan, yaitu:
 
 1. name: nama atribut yang berubah.
 2. oldValue: nilai pada atribut sebelum diubah, dan
@@ -206,3 +208,179 @@ pada function attributeChangedCallback terdapat 3 argumen.
 **penempatan argumen sangatlah penting jadi perhatikan!
 
 contoh implementasinya dapat dilihat pada folder course/lifecyle-custom-elem
+
+______________________________________________________________________________
+
+*** Styling Custom Element without Shadow DOM
+
+Tidak ada cara khusus dalam menetapkan styling pada custom elemen jika tidak menerapkan Shadow DOM. Kita dapat menerapkannya melalui css ataupun mengunakan javascript.
+
+Pada custom element biasanya kita menuliskan styling dengan menggunakan tag <style> pada saat merender template HTML menggunakan innerHTML.
+
+contoh:
+-----
+class ImageFigure extends HTMLElement {
+ 
+......
+ 
+ render() {
+    this.innerHTML = `
+      <style>
+        figure {
+          border: thin #c0c0c0 solid;
+          display: flex;
+          flex-flow: column;
+          padding: 5px;
+          max-width: 220px;
+          margin: auto;
+        }
+ 
+        figure > img {
+          max-width: 220px;
+        }
+ 
+        figure > figcaption {
+          background-color: #222;
+          color: #fff;
+          font: italic smaller sans-serif;
+          padding: 3px;
+          text-align: center;
+        }
+      </style>
+ 
+      <figure>
+        <img src="${this.src}"
+            alt="${this.alt}">
+        <figcaption>${this.caption}</figcaption>
+      </figure>
+    `;
+ }
+ 
+......
+}
+ 
+customElements.define("image-figure", ImageFigure);
+-----
+Ataupun menerapkan style pada berkas css
+
+/* Berkas style.css */
+figure {
+   border: thin #c0c0c0 solid;
+   display: flex;
+   flex-flow: column;
+   padding: 5px;
+   max-width: 220px;
+   margin: auto;
+}
+ 
+figure > img {
+   max-width: 220px;
+}
+ 
+figure > figcaption {
+   background-color: #222;
+   color: #fff;
+   font: italic smaller sans-serif;
+   padding: 3px;
+   text-align: center;
+}
+
+______________________________________________________________________________
+
+*** How to Handling Complex Data Using Custom Elements?
+
+Pembuatan custom element ini membutuhkan javascript class, kemudian simpan properti tersebut dalam class dengan menggunakan properti accessor atau getter/setter.
+
+contoh:
+
+** file article.js
+
+const article = {
+ id: 1,
+ title: "Lorem Ipsum Dolor",
+ featuredImage: "https://picsum.photos/id/204/536/354?grayscale",
+ description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+}
+ 
+export default article;
+
+** file article-item.js
+// membuat custom element
+
+class ArticleItem extends HTMLElement {
+// buat setter untuk menetapkan content article
+    set article(article) {
+        // membuat variable article menjadi private, jadi hanya bisa diakses melalui setter
+        this._article = article;
+        this.render()
+    }
+
+    render() {
+        // render DOM pada HTML
+        this.innerHTML = `
+            <img class="featured-image" src="${this._article.featuredImage}">
+            <div class="article-info">
+                <h2><a href="${this._article.id}">${this._article.title}</a></h2>
+                <p>${this._article.description}</p>
+            </div>
+        `;
+    }
+}
+// mendefinisikan custom element
+customElements.define("article-item", ArticleItem);
+
+** File script.js
+
+import "./article-item.js";
+import article from "./article.js";
+
+// mengambil selector dari div.container
+const containerElement = document.querySelector(".container");
+// membuat element article
+const articleItemElement = document.createElement("article-item");
+// .article disini merupakan setter dari class ArticleItem
+// kemudian mengisikan datanya dengan objek article pada article.js 
+articleItemElement.article = article;
+
+// menerapkan createElement pada child dari .container
+containerElement.appendChild(articleItemElement);
+
+** file index.html
+
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width">
+   <title>Handling Complex Data</title>
+   <link href="style.css" rel="stylesheet" type="text/css" />
+ </head>
+ <body>
+   <div class="container">
+   </div>
+   <script src="script.js" type="module"></script>
+ </body>
+</html>
+
+** NOTE: Baca comment code tersebut untuk penjelasannya.
+
+______________________________________________________________________________
+
+*** NESTED CUSTOM ELEMENT
+
+Web component dapat memudahkan dalam mengorganisir daftar item yang ditampilkan dalam bentuk list menggunakan container. Caranya kita membuat dua custom element yatu container, dan itemnya. Container digunakan untuk menampung elemen item di dalamnya. Selain itu pada container juga data (array) diberikan.
+
+untuk contoh lihat folder nested-custom-elements
+
+** note: Jika terdapat button atau element yang membutuhkan event maka harus didedifinisikan setter untuk event tersebut juga di dalam custom element contoh: 
+
+set clickEvent(event) {
+  this._clickEvent = event;
+  render();
+}
+
+kemudian untuk mengambil nilai dari form kita dapat menggunakan getter. yang mereturn value dari element tersebut. Contoh:
+
+get value() {
+  return this.querySelector(#searchElement).value
+}

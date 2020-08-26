@@ -1,9 +1,10 @@
+import "../component/search-bar.js"
 import DataSource from "../data/data-source.js";
 
-const main = function () {
-    const searchElement = document.querySelector("#searchElement");
-    const buttonSearchElement = document.querySelector("#searchButtonElement");
+const main =() => {
+    const searchElement = document.querySelector("search-bar");
     const clubListElement = document.querySelector("#clubList");
+    // const buttonSearchElement = document.querySelector("#searchButtonElement");
 
     const onButtonSearchClicked = () => {
     // const onButtonSearchClicked = async () => {
@@ -50,8 +51,7 @@ const main = function () {
         clubListElement.innerHTML = "";
         clubListElement.innerHTML += `<h2 class="placeholder"> ${message} </h2>`
     };
-
-    buttonSearchElement.addEventListener("click", onButtonSearchClicked);
+    searchElement.clickEvent = onButtonSearchClicked;
 };
 
 export default main;
