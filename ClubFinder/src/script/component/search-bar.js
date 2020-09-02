@@ -25,9 +25,8 @@ class SearchBar extends HTMLElement {
                 <button id="searchButtonElement" type="submit">Search</button>
             </div>`;
        
-        // Kemudian terapkan this._clickEvent sebagai event pada element button
+        // Kemudian terapkan this._clickEvent sebagai event yang akan dieksekusi pada element button
         this.querySelector("#searchButtonElement").addEventListener("click", this._clickEvent);
-        // Dengan begitu nantinya kita dapat mudah dalam clickEvent pada SearchBar yang digunakan di berkas main.js.
     }
 
     /* Pada berkas main.js juga kita memanfaatkan value dari element <input> untuk mendapatkan kata kunci 

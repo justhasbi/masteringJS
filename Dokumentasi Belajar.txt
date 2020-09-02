@@ -334,10 +334,10 @@ function makeACake(...rawIngredients) {
 
 *asynchronous
 function makeACake(...rawIngredients) {
-	gatheringIngredients(rawIngredients, function(ingridients) {
-		makeTheDough(ingridients, function(dough) {
-			pourDough(dough, function(pouredDough) {
-				bakeACake(pouredDough, function(cake) {
+	gatheringIngredients(rawIngredients, (ingredients) => {
+		makeTheDough(ingridients, (dough) => {
+			pourDough(dough, (pouredDough) => {
+				bakeACake(pouredDough, (cake) => {
 					console.log(cake);
 				});
 			});
