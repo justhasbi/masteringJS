@@ -1,0 +1,74 @@
+*** SHADOW DOM
+
+contoh DOM TREE
+
+document
+-> head -> title -> web Component
+-> body -> h1 -> Mari belajar SHADOW DOM
+
+*struktur HTML*
+<html>
+  <head>
+    <title>Web Components</title>
+  </head>
+  <body>
+    <h1>Mari belajar Shadow DOM</h1>
+  </body>
+</html>
+
+Shadow DOM menerapkan konsep enkapsulasi pada elemenya. Shadow DOM dapat mengisolasi sebagian struktur DOM di dalam komponen sehingga tidak dapat di interfensi dari luar komponen atau nodenya. Shadow DOM dapat disebut dengan "DOM didalam DOM"
+
+Illustrasi: https://www.google.com/url?q=https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM&sa=D&ust=1583841656284000
+
+Shadow dom mampu membuat dom tree lain terisolasi melalui host yang merupakan komponen dari reguler DOM.
+Shadow tree ini dimulai dari root bayangan (Shadow Root).
+
+Ada beberapa terminologi mengenai Shadow DOM, seperti:
+1. Shadow host : Merupakan komponen/node yang terdapat pada regular DOM di mana shadow DOM terlampir pada komponen/node ini.
+2. Shadow tree : DOM Tree di dalam shadow DOM.
+3. Shadow boundary : Batas dari shadow DOM dengan regular DOM.
+4. Shadow root : Root node dari shadow tree.
+
+Kita dapat memanipulasi elemen pada shadow tree selama kita dalam cakupan shadow boundary.
+
+*** BASIC USAGE
+
+Untuk melampirkan Shadow DOM pada elemen penggunaan sangat mudah, yaitu dengan menggunakan properti attachShadow pada elemen-nya seperti ini:
+
+Contoh penggunaan:
+** main.js
+
+// Shadow Host
+const divElement = document.createElement("div");
+ 
+ 
+// element yang berada di dalam Shadow DOM
+const headingElement = document.createElement("h1");
+headingElement.innerText = "Ini merupakan konten di dalam shadow DOM";
+ 
+ 
+// Melampirkan shadow root pada shadow host
+// Mengatur mode shadow dengan nilai open
+const shadowRoot = divElement.attachShadow({mode: "open"});
+ 
+ 
+// Memasukkan element heading ke dalam shadow root
+shadowRoot.appendChild(headingElement);
+ 
+ 
+// Memasukkan elemen shadow host ke regular DOM
+document.body.appendChild(divElement);
+
+** index.html
+
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width">
+   <title>Shadow DOM Basic Usage</title>
+ </head>
+ <body>
+ <script src="main.js"></script>
+ </body>
+</html>
