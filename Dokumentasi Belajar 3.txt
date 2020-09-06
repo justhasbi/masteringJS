@@ -72,3 +72,78 @@ document.body.appendChild(divElement);
  <script src="main.js"></script>
  </body>
 </html>
+--------
+
+Shadow DOM tidak akan terpengaruh styling element yang berada diluar dari shadow root-nya.
+
+** Bagaimana kita dapat melakukan styling pada shadow DOM?
+Caranya dengan menambahkan template <style> didalam shadowRoot.innerHTML.
+Contohnya:
+
+// menetapkan styling pada Shadow DOM
+shadowRoot.innerHTML += `
+ <style>
+   h1 {
+     color: green;
+   }
+ </style>
+`;
+
+______________________________________________________________________________________________________
+
+*** Shadow DOM in Web Components
+
+Styling yang diterapkan pada custom element akan berdampak pula pada element diluarnya, solusinya yaitu dengan menerapkan Shadow DOM.
+
+terapkan attachShadow pada constructor Custom Element 
+
+Contoh: 
+
+class ImageFigure extends HTMLElement {
+    constructor() {
+        super();
+        this._shadowRoot = this.attachShadow({mode: "open"});
+    }
+
+    // .....
+}
+
+** Penjelasan:
+
+Agar nilai shadowRoot dapat diakses pada fungsi mana saja di class, maka kita perlu memasukkan nilai shadowRoot pada properti class menggunakan this. Kita bebas menentukan nama properti sesuai keinginan, namun untuk memudahkan kita gunakan nama _shadowRoot. Lalu mengapa penamaannya menggunakan tanda underscore (_) di depannya? Jawabannya, this pada konteks class ini merupakan HTMLElement dan ia sudah memiliki properti dengan nama shadowRoot. Untuk membedakan properti _shadowRoot asli dengan properti baru yang kita buat, kita bisa tambahkan underscore di awal penamaannya. Hal ini dibutuhkan karena jika kita menerapkan mode closed pada Shadow DOM, nilai properti shadowRoot akan mengembalikan null, sehingga tidak ada cara lain untuk kita mengakses Shadow Tree.
+
+Setelah menerapkan Shadow DOM pada constructor, ketika ingin mengakses apapun yang merupakan properti dari DOM kita harus melalui _shadowRoot. Contohnya ketika ingin menerapkan template HTML, kita tidak bisa menggunakan langsung this.innerHTML, namun perlu melalui this._shadowRoot.innerHTML.
+
+
+______________________________________________________________________________________________________
+
+*** NODE PACKAGE MANAGER
+
+Merupakan pengelola package tersedia pada  https://www.npmjs.com/ untuk JavaScript.
+
+Penjelasan mengenai NPM: https://docs.npmjs.com/cli-documentation/cli.
+
+inisialisasi project dengan npm init -y
+
+terdapat dua tipe objek package dependencies dalam berkas package.json. Yang pertama objek dependencies, dan yang kedua objek devDepedencies.
+
+Objek dependencies merupakan objek yang menampung package yang kita gunakan untuk membuat aplikasi. Biasanya package yang didaftarkan pada dependencies merupakan sebuah framework seperti React, Angular, Vue, jQuery atau framework lainnya. Untuk memasang package pada dependencies kita cukup gunakan perintah
+
+**
+npm install <package-name> 
+**
+
+edangkan objek devDependecies digunakan untuk package mendaftarkan package yang digunakan hanya selama pengembangan saja. Contohnya package yang berfungsi sebagai web server lokal seperti http-server, atau package yang berfungsi untuk membundel JavaScript seperti webpack. Untuk memasang package sebagai devDependencies kita gunakan perintah 
+
+**
+npm install <package-name> --save-dev
+**
+
+NPM sejatinya diperuntukan untuk node aplication yang berjalan diluar browser. Pada node aplication kita dapat menggunakan package tersebut dengan mengimpornya seperti ini:
+
+**
+const moment = require("moment");
+**
+
+Kode diatas hanya akan berjalan pada environment Node.js, untuk melakukan import node package pada browser kita membutuhkan tools tambahan seperti webpack.
+

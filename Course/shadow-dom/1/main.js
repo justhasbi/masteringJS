@@ -7,7 +7,7 @@ headingElement.innerText = "Text di dalam shadow dom";
 
 // melampirkan Shadow Root pada shadow host menggunakan method attachShadow pada host
 // Mengatur mode shadow dengan nilai open
-const shadowRoot = divElement.attachShadow({mode: "open"});
+let shadowRoot = divElement.attachShadow({mode: "closed"});
 
 // memasukan element heading pada shadow root
 shadowRoot.appendChild(headingElement);

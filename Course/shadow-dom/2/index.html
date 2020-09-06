@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Element Shadow DOM Styling</title>
+</head>
+<body>
+    <image-figure
+     src="https://d17ivq9b7rppb3.cloudfront.net/original/reward/20200318220346b910e38f4274dbf6f1072a7075959ebf.png"
+     alt="Dicoding Logo"
+     caption="Huruf g dalam logo Dicoding">
+     </image-figure>
+ 
+ 
+     <!-- Styling di dalam image-figure akan mempengaruhi juga elemen di luarnya -->
+     <figure>
+       <img src="https://d17ivq9b7rppb3.cloudfront.net/original/reward/20200318220346b910e38f4274dbf6f1072a7075959ebf.png"
+       alt="Dicoding logo"/>
+       <figcaption>Huruf g dalam logo Dicoding</figcaption>
+     </figure>
+
+    <script src="image-figure.js"></script>
+</body>
+</html>
