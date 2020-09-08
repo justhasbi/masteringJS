@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,13 @@
     "moment": "^2.27.0"
   },
   "devDependencies": {
-    "http-server": "^0.12.3"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.2",
+    "html-webpack-plugin": "^4.4.1",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -147,3 +147,450 @@ const moment = require("moment");
 
 Kode diatas hanya akan berjalan pada environment Node.js, untuk melakukan import node package pada browser kita membutuhkan tools tambahan seperti webpack.
 
+______________________________________________________________________________________________________
+
+*** WEBPACK
+
+Salah satu module bundler yang populer digunakan pada saat ini adalah Webpack. Dengan menggunakan webpack kita dapat mengubah dynamic code dan modules menjadi static code (kode yang siap digunakan pada tahap production). 
+
+webpack merupakan medule bundler yang mengobservasi module apa saja yang digunakan dan membungkus module-module tersebut menjadi satu berkas(atau lebih). Sehingga dapat membawa node package atau apapun dapat berjalan pada browser.
+
+*** Core Concept About WEBPACK
+5 Perilaku webpack ketika dijalankan
+
+1. Entry: Titik awal di mana webpack akan menganalisa berkas dan membentuk dependency graph.
+2. Output: Berkas bundle yang dihasilkan dari berkas-berkas yang dianalisis webpack berdasarkan entry point.
+3. Loaders: Transformation tools pada webpack, yang memproses setiap berkas selain JavaScript atau JSON yang kita import menjadi format yang dapat digunakan ke tahap produksi.
+4. Plugin: Digunakan untuk melakukan tugas seperti optimasi bundle, management assets dan sebagainya.
+5. Mode: Kondisi yang digunakan webpack sebagai acuan optimasi apa saja yang harus diterapkan dalam melakukan tugasnya. Dalal mode kita dapat menetapkan nilai production, development ataupun none.
+
+*** PENJELASAN PER POIN 
+
+*** Entry / Entry Point
+Merupakakan module pertama yang akan dianalisa oleh webpack ketika dijalankan. Melalui entry point inilah webpack membentuk dependency graph. Webpack menyatukan module yang digunakan dalam entry menjadi static assets.
+
+Pada webpack 4 secara standar value dari entry point disimpan dalam "./src/index.js", namun kita dapat mengatur posisinya pada file configurasi Webpack (webpack.config.js).
+
+** Contoh: 
+
+module.exports = {
+  entry: './path/to/my/entry/file.js'
+};
+
+penulisan lain:
+
+module.exports = {
+  entry: {
+    main: './path/to/my/entry/file.js'
+  }
+};
+
+Kita bisa memanfaatkan objek sebagai nilai entry ketika terdapat banyak entry point yang ingin kita tetapkan.
+
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    adminApp: './src/adminApp.js'
+  }
+};
+
+*** Output
+
+Berfungsi untuk memberitahu webpack dimana dan bagaimana lokasi static assets yang telah di bundle akan disimpan dan diberinama.
+
+Contoh konfigurasi yang tersedia dalam webpack.config.js:
+
+const path = require('path');
+ 
+module.exports = {
+  entry: './path/to/my/entry/file.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-first-webpack.bundle.js'
+  }
+};
+
+Untuk memahami lebih dalam mengenai module path silakan cek  https://nodejs.org/api/path.html.
+
+Jika kita menetapkan lebih dari satu entry point, kita perlu menggunakan substitution untuk memastikan berkas yang dihasilkan webpack memiliki nama unik.
+
+** Contoh:
+
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    search: './src/search.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: __dirname + '/dist'
+  }
+};
+ 
+// webpack akan menghasilkan: ./dist/app.js, ./dist/search.js
+
+*** Loaders
+
+Webpack sejatinya hanya mengenali berkas JavaScript dan JSON, tetapi melalui Loaders Webpack dapat memproses berkas dengan format lain. Loaders merupakan sebuah transformation tools pada Webpack yang akan memproses setiap berkas selain JavaScript atau JSON yang kita impor menjadi format yang dapat digunakan ke tahap produksi.
+
+Untuk menetapkan loaders kita gunakan properti module.rules pada webpack configuration (webpack.config.js). Di dalamnya terdapat dua high level properties yaitu test, dan use. Berikut penjelasan singkatnya:
+
+1. Properti test merupakan tipe berkas yang akan ditransformasikan.
+2. Properti use merupakan loader mana yang akan digunakan untuk mentransformasikan berkas tersebut.
+
+** Contoh konfigurasi Loaders:
+
+module.exports = {
+  module: {
+    rules: [
+      {test: /\.css$/, use: 'css-loader'}
+    ]
+  }
+};
+
+** Penjelasan:
+Konfigurasi di atas memiliki properti module.rules dan menetapkan properti test dan use di dalamnya. Konfigurasi seperti ini layaknya kita memberitahu “Hey webpack compiler! Ketika Anda bertemu dengan berkas .css yang dihubungkan menggunakan import atau require statement, gunakanlah css-loader untuk mengubahnya sebelum membungkusnya ke dalam bundle.”
+
+Banyak sekali loader yang dapat kita gunakan pada webpack configuration. Namun loader tersebut tidak disertakan langsung ketika kita menggunakan webpack. Jika kita ingin menggunakan loader katakanlah css-loader, maka kita perlu memasang package loader tersebut melalui npm.
+
+npm install css-loader --save-dev
+
+Melalui module.rules kita dapat menetapkan banyak loader, namun dalam penulisannya kita perlu menetapkan loader tersebut secara eksplisit seperti ini:
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: "style-loader"
+          },
+
+          {
+            loader: "css-loader"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Loader akan tereksekusi dengan urutan dari bawah ke atas. Pada contoh di atas eksekusi akan dimulai dari css-loader, lalu dilanjutkan oleh style-loader.
+
+** Contoh
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: "style-loader",
+            option: {
+              // memasukan style dengan tag <style> di bawah dari element <body>
+              insert: "body"
+            }
+          },
+
+          {
+            loader: "css-loader"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+Untuk melihat loader apa saja yang dapat kita manfaatkan pada webpack dan konfigurasinya. Kita dapat melihatnya secara lengkap pada dokumentasi resmi webpack https://webpack.js.org/loaders/
+
+*** Plugin
+
+Webpack Plugin merupakan sebuah JavaScript objek yang dibangun menggunakan JavaScript class yang di dalamnya terdapat method apply dengan satu argument bernama compiler. Kita dapat membuat webpack plugin sederhana dengan cara seperti ini: 
+
+console-log-on-build-webpack-plugin.js
+
+const pluginName = 'ConsoleLogOnBuildWebpackPlugin';
+
+class ConsoleLogOnBuildWebpackPlugin {
+  constructor(options) {
+    this.options = options;
+  }
+ 
+  apply(compiler) {
+    compiler.hooks.run.tap(pluginName, compilation => {
+      console.log(this.options.message);
+    });
+  }
+}
+ 
+module.exports = ConsoleLogOnBuildWebpackPlugin;
+
+Ketika kita menggunakan plugin tersebut pada webpack configuration, ia akan mencetak nilai this.option.message pada console ketika proses build berjalan.
+
+Plugin merupakan objek dan kita mungkin menyimpan konfigurasi ketika ia dibuat, maka dalam membuat objek plugin kita perlu menggunakan keyword new seperti ini:
+
+const ConsoleLogOnBuildWebpackPlugin = require("./console-log-on-build-webpack-plugin.js");
+
+module.exports = {
+  plugins: [
+
+    // Memerlukan keyword new untuk membuat objek plugin
+
+    new ConsoleLogOnBuildWebpackPlugin({
+      message: "The webpack build process is starting!"
+    })
+  ]
+};
+
+Untuk menggunakan plugin standar webpack, kita dapat mengaksesnya melalui objek webpack seperti ini: 
+
+const webpack = require("webpack"); // dibutuhkan untuk mengakses built-in plugins
+
+module.exports = {
+  plugins: [
+    new webpack.ProgressPlugin()
+  ]
+}
+
+Untuk menggunakan plugin dari luar selain standar yang disediakan kita perlu memasangnya terlebih dahulu menggunakan NPM. Contoh plugin untuk membuat berkas HTML pada webpack adalah html-webpack-plugin. Untuk memasangnya menggunakan perintah berikut:
+
+npm install html-webpack-plugin --save-dev
+
+Setelah terpasang kita dapat menggunakannya seperti sebagai berikut:
+
+const HtmlWebpackPlugin = require("html-webpack-plugin"); //dipasang via npm
+
+module.exports = {
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+      filename: "index.html"
+    })
+  ]
+};
+
+
+*** Mode
+
+Merupakan properti webpack configuration dengan memberikan mode dengan nilai development, production, atau none untuk melakukan optimasi pada webpack berdasarkan mode yang dihendaki. Jika mode tidak ditetapkan maka akan secara default bernilai production.
+
+Contoh: 
+
+module.exports = {
+  mode: "production"
+};
+
+atau bisa melalui CLI:
+
+webpack --mode development
+
+Pada mode yang dikehendaki kita dapat melakukan beberapa optimasi. Misalkan, jika menggunakan mode development dapat menggunakan properti devtool, cache, atau properti development lainnya.
+
+Contoh:
+
+module.exports = {
+  mode: "development",
+  devtool: "eval",
+  cache: "true"
+}
+
+Untuk lebih tau tentang operasi apa saja yang dapat digunakan pada masing-masing mode bisa kunjungi: https://webpack.js.org/configuration/mode/
+
+Jika ingin mengubah perilaku webpack berdasarkan nilai mode didalam webpack.config.js, ubahlah module.exports dari objek ke fungsi.
+
+Contoh: 
+
+const config = {
+  entry: "./app.js"
+
+  // ...
+}
+
+module.exports = (env, argv) => {
+  if(argv.mode === "development") {
+    config.devtool = "source-map";
+  }
+
+  if(argv.mode === "production") {
+    //...
+  }
+
+  return config;
+};
+
+
+Kita dapat menggunakan flag --config pada scripts berkas package.json untuk menetapkan berkas webpack configuration yang berbeda pada tiap modenya.
+
+"script" : {
+  "build: prod": "webpack --config webpack.prod.js",
+  "build:dev": "webpack --config webpack.dev.js"
+}
+
+______________________________________________________________________________________________________
+
+*** Menggunakan WEBPACK
+
+Installing Webpack
+Webpack akan dipasang pada devDepedencies karena hanya digunakan pada proses pengembangan saja.
+
+cara install: 
+
+npm install webpack --save-dev
+npm install webpack-cli --save-dev
+
+Package webpack merupakan package inti dari webpack itu sendiri. Sedangkan package webpack-cli merupakan package yang digunakan untuk membantu kita menjalankan webpack melalui sebuah perintah (Command Line Interface). 
+
+set script build ke webpack
+
+"script" : "webpack"
+
+Karena kita sudah menggunakan webpack untuk membundel module. Kita dapat menggunakan perintah import pada src -> index.js dalam menggunakan package npm.
+
+semua script package ditunjukan pada folder /dist. Contoh: <script src="./dist/main.js"></script>
+
+Selanjutnya membuat file webpack.config.js 
+
+Untuk konfigurasi awal, kita tetapkan terlebih dahulu entry dan output pada webpack configuration. Caranya dengan tambahkan kode berikut pada berkas webpack.config.js.
+
+const path = require("path");
+ 
+module.exports = {
+    entry: "./src/index.js",
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: "bundle.js"
+    }
+}
+
+Pada nilai entry walaupun kita menetapkannya namun tidak ada nilai yang berbeda seperti nilai standar yaitu src -> index.js. Namun pada nilai output, kita mengubah penamaan berkas hasil bundel dari main.js (nilai standar) menjadi bundle.js. Sehingga ketika kita jalankan kembali script build.
+
+Kemudian: 
+
+npm run build
+
+Catatan : Sebenarnya kita juga dapat melihat warning lain yang menunjukkan ukuran bundle.js sudah melampaui batas. Kita sendiri bisa lihat dengan membuka berkas bundle.js. Di sana kita akan menemukan banyak sekali kode yang dihasilkan dibandingkan dengan sebelumnya. 
+
+Hal ini disebabkan kode yang kita tulis memiliki ketergantungan (dependencies) terhadap package JQuery dan Moment. Sehingga package tersebut perlu dibundel juga pada berkas bundle.js. karena itulah berkas bundle.js menjadi bengkak ukurannya. 
+
+Ini merupakan salah satu alasan mengapa sebaiknya kita hindari penggunaan package pihak ketiga yang kita bawa hingga tingkat production. Membengkaknya berkas bundle.js, tentu akan berdampak terhadap performa web yang kita bangun nantinya.
+
+______________________________________________________________________________________________________
+
+*** Using Loader 
+
+** Style dan CSS Loader
+
+Untuk menggunakan CSS modul pada webpack, kita membutuhkan dua buah loader. Yang pertama css-loader dan yang kedua style-loader. css-loader merupakan loader untuk memproses berkas dengan format .css. Sedangkan style-loader merupakan loader yang digunakan untuk membuat styling dapat diterapkan secara modular dengan menggunakan import statement. 
+
+Cara menginstallnya: 
+
+npm install style-loader css-loader --save-dev
+
+kemudian gunakan loader tersebut pada module.rule seperti:
+
+const path = require("path");
+ 
+module.exports = {
+    entry: "./src/index.js",
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: "bundle.js"
+    },
+    mode: "production",
+
+    // Loader ditempatkan
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: "style-loader"
+                    },
+                    {
+                        loader: "css-loader"
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+
+kemudian import css melalui index.js: import "./src/style/style.css"
+kemudian npm run build
+
+** BABEL LOADER
+
+Babel merupakan sebuah transpiler yang bertugas untuk mengubah sintaks JavaScript modern (ES6+) menjadi sintaks yang dapat didukung penuh oleh seluruh browser.
+
+Untuk menggunakan babel pada webpack sebagai loader, kita perlu memasang tiga package menggunakan npm pada devDependencies. Yang pertama package @babel/core, yang kedua babel-loader, dan yang ketiga @babel/preset-env.
+
+**
+npm install @babel/core babel-loader @babel/preset-env --save-dev
+**
+
+Package @babel/core merupakan package inti yang harus dipasang ketika kita hendak menggunakan babel, baik pada webpack maupun tools yang lain.
+
+Package babel-loader merupakan package yang diperlukan untuk menggunakan babel sebagai loader pada webpack.
+
+setelah berhasil, gunakan package tersebut:
+
+{
+  test: /\.js$/,
+  exclude: "/node_modules/",
+  use: [
+      {
+          loader: "babel-loader",
+          options: {
+              presets: ["@babel/preset-env"]
+          }
+      }
+  ]
+}
+
+ketika menetapkan rule pada berkas .js maka jangan lupa menetapkan properti exclude dengan nilai "/node_modules/". Artinya dengan menetapkan exclude berarti kita mengecualikan webpack untuk memproses berkas .js pada node_modules.
+
+______________________________________________________________________________________________________
+*** USING PLUGIN
+
+Ketika membuat web application tentunya kita membutuhkan minimal satu berkas HTML yang biasanya dinamai dengan index.html. Dengan menambahkan plugin HtmlWebpackPlugin, Webpack dapat membuatkan berkas HTML dan memasukkan script hasil bundel pada berkas HTML yang dibuat secara otomatis. HtmlWebpackPlugin juga mendukung templating dan penggunaannya sangat dapat dikonfigurasi.
+
+Langkah pertama memasang html-webpack-plugin pada devDepedencies
+
+**
+npm install html-webpack-plugin --save-dev
+**
+
+Setelah memasang HtmlWebpackPlugin, lakukan import package html-webpack-plugin pada berkas webpack.config.js sebagai objek dengan nama HtmlWebpackPlugin.
+
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+ 
+module.exports = ....
+
+
+Kemudian pada modul.exports tambahkan properti plugins: [...]
+
+module.exports = {
+   ......,
+    /* plugin */
+    plugins: [
+        /* HTML Webpack Plugin */
+        new HtmlWebpackPlugin({
+            template: "./template.html",
+            filename: "index.html"
+        })
+    ]
+}
+
+Di dalam penggunaan plugin HtmlWebpackPlugin Anda dapat menentukan konfigurasi di dalam konstruktornya. Pada contoh kode di atas Anda menetapkan konfigurasi untuk template dan filename. Template di sana merupakan berkas rujukan bagi pembuatan berkas HTML yang dihasilkan HtmlWebpackPlugin. Lalu nilai dari properti filename akan digunakan sebagai penamaan berkas HTML yang akan dihasilkan nanti.
+
+Mungkin contoh kode di atas membuat Anda sedikit bingung karena baik template dan filename kita menetapkan nama yang sama (index.html). Padahal sebenarnya Anda dapat menetapkan nama berkasnya sesuai keinginan. Untuk itu, mari ubah penamaan dan bedakan lokasi index.html yang ada sekarang menjadi src -> template.html. 
+
+HtmlWebpackPlugin secara otomatis akan memasukan output script bundle pada berkas HTML yang dihasilkannya, kita tidak perlu menetapkan tag <script> secara manual pada berkas template.html. Dengan begitu kita dapat menghapusnya.
+
+
+SELAMAT seluruh komponen dapat dideploy ke internet dengan men-deploy seluruh berkas yang tersimpan pada folder dist. Seluruh berkas yang dibutuhkan untuk tahap production sudah terdapat di dalam folder dist.
